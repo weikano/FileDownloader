@@ -90,6 +90,12 @@ public class DownloadTask implements BaseDownloadTask, BaseDownloadTask.IRunning
     }
 
     @Override
+    public BaseDownloadTask setMimeTypeCheck(String mimeType) {
+        addHeader(TARGET_MIME_TYPE, mimeType);
+        return null;
+    }
+
+    @Override
     public BaseDownloadTask setPath(final String path, final boolean pathAsDirectory) {
         this.mPath = path;
         if (FileDownloadLog.NEED_LOG) {

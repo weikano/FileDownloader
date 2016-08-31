@@ -24,6 +24,7 @@ import android.text.TextUtils;
 
 import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.liulishuo.filedownloader.IThreadPoolMonitor;
+import com.liulishuo.filedownloader.exception.MimeTypeMismatchException;
 import com.liulishuo.filedownloader.exception.FileDownloadGiveUpRetryException;
 import com.liulishuo.filedownloader.exception.FileDownloadHttpException;
 import com.liulishuo.filedownloader.exception.FileDownloadOutOfSpaceException;
@@ -48,6 +49,7 @@ import java.net.HttpURLConnection;
 import okhttp3.CacheControl;
 import okhttp3.Call;
 import okhttp3.Headers;
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -248,7 +250,13 @@ public class FileDownloadRunnable implements Runnable {
 
                 // Step 4, build connect
                 response = call.execute();
-
+                MediaType targetType = MediaType.parse(request.header(BaseDownloadTask.TARGET_MIME_TYPE));
+                if(targetType != null){
+                    MediaType responseType = response.body().contentType();
+                    if(responseType == null || !targetType.type().equals(responseType.type())){
+                        throw new MimeTypeMismatchException(responseType,targetType);
+                    }
+                }
                 final boolean isSucceedStart = response.code() == HttpURLConnection.HTTP_OK;
                 final boolean isSucceedResume = response.code() == HttpURLConnection.HTTP_PARTIAL &&
                         isResumeDownloadAvailable;

@@ -28,7 +28,7 @@ import com.liulishuo.filedownloader.util.FileDownloadUtils;
  */
 @SuppressWarnings({"WeakerAccess", "UnusedReturnValue"})
 public interface BaseDownloadTask {
-
+    public static final String TARGET_MIME_TYPE = "TARGET_MIME_TYPE";
     int DEFAULT_CALLBACK_PROGRESS_MIN_INTERVAL_MILLIS = 10;
 
     /**
@@ -47,6 +47,8 @@ public interface BaseDownloadTask {
      *             assign to {@code false}.
      */
     BaseDownloadTask setPath(final String path);
+
+    BaseDownloadTask setMimeTypeCheck(final String mimeType);
 
     /**
      * @param path            The absolute path for saving the download file.
